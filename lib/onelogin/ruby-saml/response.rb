@@ -591,6 +591,8 @@ module OneLogin
       def validate_audience
         return true if audiences.empty? || settings.issuer.nil? || settings.issuer.empty?
 
+        audiences.map! { |audience| audience.gsub(/^spn:/, '') } # remove weird Azure prefix, refer to: https://github.com/assaydepot/rx/issues/10083
+
         unless audiences.include? settings.issuer
           s = audiences.count > 1 ? 's' : '';
           error_msg = "Invalid Audience#{s}. The audience#{s} #{audiences.join(',')}, did not match the expected audience #{settings.issuer}"
